@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Peshal Kaphle - Visual Editor and Video Editor Portfolio" />
+  <meta name="theme-color" content="#080808" />
+  <title>Peshal Kaphle | Visual Editor</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #080808;
+      --bg-soft: #111111;
+      --card: #151515;
+      --text: #ffffff;
+      --muted: #a5a5a5;
+      --accent: #ff5c35;
+      --border: rgba(255,255,255,0.10);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    img, video { display: block; width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    .container {
+      width: min(1200px, 92%);
+      margin: auto;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      z-index: 1000;
+      background: rgba(8,8,8,.76);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 26px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      transition: .25s ease;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 90px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      width: 520px; height: 520px;
+      border-radius: 50%;
+      background: rgba(255,92,53,.15);
+      filter: blur(100px);
+      position: absolute;
+      right: -140px;
+      top: 80px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 920px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px; height: 2px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(3.6rem, 9vw, 8rem);
+      line-height: .94;
+      letter-spacing: -5px;
+      margin-bottom: 28px;
+    }
+
+    .hero p {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+    }
+
+    .hero-buttons {
+      margin-top: 38px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 24px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-secondary:hover { background: #fff; color: #000; }
+
+    section { padding: 110px 0; }
+
+    .section-heading { margin-bottom: 48px; }
+
+    .section-heading span {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      letter-spacing: -2px;
+      margin-top: 8px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      max-width: 680px;
+      margin-top: 14px;
+      font-size: 1.05rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 34px;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: #fff;
+      color: #000;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 26px;
+    }
+
+    .project { cursor: pointer; }
+
+    .project-media {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      background: var(--card);
+      aspect-ratio: 16/10;
+    }
+
+    .project-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: .5s ease;
+    }
+
+    .project:hover .project-media img { transform: scale(1.04); }
+
+    .play-button {
+      width: 65px; height: 65px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,.94);
+      color: #000;
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 1.4rem;
+      transition: .25s ease;
+    }
+
+    .project:hover .play-button {
+      transform: translate(-50%,-50%) scale(1.08);
+    }
+
+    .project-info { padding: 15px 3px 10px; }
+    .project-info h3 { font-size: 1.3rem; margin-bottom: 5px; }
+    .project-info p { color: var(--muted); }
+
+    .reel-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .reel {
+      aspect-ratio: 9/16;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #111;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .reel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: .4s ease;
+    }
+
+    .reel:hover img { transform: scale(1.04); }
+
+    .reel .play-button {
+      width: 54px; height: 54px;
+      font-size: 1.1rem;
+    }
+
+    .photo-grid {
+      columns: 3;
+      column-gap: 20px;
+    }
+
+    .photo-grid img {
+      margin-bottom: 20px;
+      border-radius: 14px;
+      break-inside: avoid;
+      transition: .3s ease;
+      background: #111;
+    }
+
+    .photo-grid img:hover { transform: scale(1.01); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: center;
+    }
+
+    .about-image {
+      min-height: 520px;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #151515;
+    }
+
+    .about-image img {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+    }
+
+    .about-text h2 {
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      letter-spacing: -3px;
+      line-height: 1;
+      margin-bottom: 25px;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      font-size: 1.08rem;
+      margin-bottom: 18px;
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .skill {
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: #ccc;
+    }
+
+    .contact { text-align: center; }
+
+    .contact h2 {
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      letter-spacing: -4px;
+      line-height: 1;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .contact p {
+      color: var(--muted);
+      margin: 25px auto 35px;
+      max-width: 620px;
+    }
+
+    .socials {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      color: var(--muted);
+    }
+
+    .socials a:hover { color: #fff; }
+
+    .video-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.94);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+    }
+
+    .video-modal.active { display: flex; }
+
+    .modal-content {
+      width: min(1100px, 100%);
+      position: relative;
+    }
+
+    .video-wrapper {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .video-wrapper.vertical {
+      width: min(430px, 90vw);
+      aspect-ratio: 9/16;
+      margin: auto;
+    }
+
+    .video-wrapper iframe,
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: contain;
+      background: #000;
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 0;
+      top: -52px;
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.25);
+      color: #fff;
+      background: rgba(255,255,255,.10);
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 35px 0;
+      color: var(--muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .reel-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { grid-template-columns: 1fr; }
+      .photo-grid { columns: 2; }
+    }
+
+    @media (max-width: 650px) {
+      .nav-links { display: none; }
+      h1 { letter-spacing: -3px; }
+      .project-grid { grid-template-columns: 1fr; }
+      .reel-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .photo-grid { columns: 1; }
+      section { padding: 80px 0; }
+      .footer-inner { flex-direction: column; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="container nav-inner">
+      <a class="logo" href="#">PESHAL<span>.</span></a>
+      <div class="nav-links">
+        <a href="#work">Work</a>
+        <a href="#reels">Reels</a>
+        <a href="#gallery">Images</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="eyebrow">Visual Editor • Video Editor</div>
+        <h1>PESHAL<br>KAPHLE</h1>
+        <p>
+          I create visually engaging stories through video editing,
+          short-form content, reels, motion, imagery and digital storytelling.
+        </p>
+
+        <div class="hero-buttons">
+          <a class="btn btn-primary" href="#work">View My Work</a>
+          <a class="btn btn-secondary" href="#contact">Work With Me</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="container">
+      <div class="section-heading">
+        <span>Portfolio</span>
+        <h2>Selected Work</h2>
+        <p>
+          Add your YouTube links in the JavaScript section near the bottom of this file.
+          The thumbnail is created automatically and the video plays inside the website.
+        </p>
+      </div>
+
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="youtube">YouTube</button>
+        <button class="filter-btn" data-filter="commercial">Commercial</button>
+        <button class="filter-btn" data-filter="social">Social Media</button>
+      </div>
+
+      <div class="project-grid" id="projectGrid"></div>
+    </div>
+  </section>
+
+  <section id="reels">
+    <div class="container">
+      <div class="section-heading">
+        <span>Short Form</span>
+        <h2>Reels & Vertical Videos</h2>
+        <p>
+          Replace the sample video files with your MP4 reels. Clicking a reel opens a
+          vertical player similar to Instagram Reels.
+        </p>
+      </div>
+
+      <div class="reel-grid">
+        <div class="reel" onclick="playLocalVideo('videos/reel1.mp4', true)">
+          <img src="images/reel1.svg" alt="Reel 1">
+          <div class="play-button">▶</div>
+        </div>
+
+        <div class="reel" onclick="playLocalVideo('videos/reel2.mp4', true)">
+          <img src="images/reel2.svg" alt="Reel 2">
+          <div class="play-button">▶</div>
+        </div>
+
+        <div class="reel" onclick="playLocalVideo('videos/reel3.mp4', true)">
+          <img src="images/reel3.svg" alt="Reel 3">
+          <div class="play-button">▶</div>
+        </div>
+
+        <div class="reel" onclick="playLocalVideo('videos/reel4.mp4', true)">
+          <img src="images/reel4.svg" alt="Reel 4">
+          <div class="play-button">▶</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <div class="container">
+      <div class="section-heading">
+        <span>Visuals</span>
+        <h2>Image Gallery</h2>
+        <p>Replace these sample images with your own thumbnails, frames, graphics and photography.</p>
+      </div>
+
+      <div class="photo-grid">
+        <img src="images/work1.svg" alt="Visual project 1">
+        <img src="images/work2.svg" alt="Visual project 2">
+        <img src="images/work3.svg" alt="Visual project 3">
+        <img src="images/work4.svg" alt="Visual project 4">
+        <img src="images/work5.svg" alt="Visual project 5">
+        <img src="images/work6.svg" alt="Visual project 6">
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-image">
+          <img src="images/peshal.svg" alt="Peshal Kaphle">
+        </div>
+
+        <div class="about-text">
+          <div class="eyebrow">About Me</div>
+          <h2>Visual storytelling through every frame.</h2>
+
+          <p>
+            I'm Peshal Kaphle, a visual editor focused on creating engaging video
+            and digital content.
+          </p>
+
+          <p>
+            I work across long-form videos, short-form reels, social media content,
+            promotional videos and visual storytelling. My goal is to turn raw footage
+            and ideas into content that captures attention and communicates a clear story.
+          </p>
+
+          <div class="skills">
+            <span class="skill">Video Editing</span>
+            <span class="skill">Visual Editing</span>
+            <span class="skill">Reels</span>
+            <span class="skill">YouTube</span>
+            <span class="skill">Social Media</span>
+            <span class="skill">Color Grading</span>
+            <span class="skill">Motion Graphics</span>
+            <span class="skill">Storytelling</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="container">
+      <div class="eyebrow">Let's Create</div>
+      <h2>Have a project in mind?</h2>
+      <p>
+        I'm available for video editing, visual editing, social media content
+        and creative collaborations.
+      </p>
+
+      <!-- CHANGE YOUR EMAIL BELOW -->
+      <a class="btn btn-primary" href="mailto:your@email.com">Contact Me</a>
+
+      <div class="socials">
+        <!-- CHANGE THESE LINKS -->
+        <a href="#" target="_blank" rel="noopener">YouTube</a>
+        <a href="#" target="_blank" rel="noopener">Instagram</a>
+        <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="video-modal" id="videoModal" onclick="closeVideoOnBackground(event)">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeVideo()" aria-label="Close video">✕</button>
+      <div class="video-wrapper" id="videoWrapper"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> Peshal Kaphle</div>
+      <div>Visual Editor • Video Editor</div>
+    </div>
+  </footer>
+
+  <script>
+    /*
+      ======================================================
+      ADD YOUR YOUTUBE VIDEOS HERE
+      ======================================================
+
+      Examples supported:
+      https://www.youtube.com/watch?v=VIDEO_ID
+      https://youtu.be/VIDEO_ID
+      https://www.youtube.com/shorts/VIDEO_ID
+
+      Change the sample URLs below to your own videos.
+    */
+
+    const youtubeProjects = [
+      {
+        title: "Featured Video Edit",
+        category: "YouTube / Video Editing",
+        filter: "youtube",
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      },
+      {
+        title: "Brand Story",
+        category: "Commercial / Storytelling",
+        filter: "commercial",
+        url: "https://youtu.be/dQw4w9WgXcQ"
+      },
+      {
+        title: "Social Media Campaign",
+        category: "Social Media",
+        filter: "social",
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      },
+      {
+        title: "Creative Visual Edit",
+        category: "YouTube / Visual Editing",
+        filter: "youtube",
+        url: "https://youtu.be/dQw4w9WgXcQ"
+      }
+    ];
+
+    function getYouTubeId(url) {
+      try {
+        const parsed = new URL(url);
+
+        if (parsed.hostname.includes("youtu.be")) {
+          return parsed.pathname.replace("/", "").split("?")[0];
+        }
+
+        if (parsed.hostname.includes("youtube.com")) {
+          if (parsed.pathname.includes("/shorts/")) {
+            return parsed.pathname.split("/shorts/")[1].split("/")[0];
+          }
+
+          if (parsed.pathname.includes("/embed/")) {
+            return parsed.pathname.split("/embed/")[1].split("/")[0];
+          }
+
+          return parsed.searchParams.get("v");
+        }
+      } catch (error) {
+        console.error("Invalid YouTube URL:", url);
+      }
+
+      return null;
+    }
+
+    function loadYouTubeProjects() {
+      const grid = document.getElementById("projectGrid");
+      grid.innerHTML = "";
+
+      youtubeProjects.forEach(project => {
+        const videoId = getYouTubeId(project.url);
+        if (!videoId) return;
+
+        const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+
+        const item = document.createElement("article");
+        item.className = "project";
+        item.dataset.category = project.filter || "youtube";
+
+        item.innerHTML = `
+          <div class="project-media">
+            <img
+              src="${thumbnail}"
+              alt="${project.title}"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='https://img.youtube.com/vi/${videoId}/hqdefault.jpg';"
+            >
+            <div class="play-button">▶</div>
+          </div>
+
+          <div class="project-info">
+            <h3>${project.title}</h3>
+            <p>${project.category}</p>
+          </div>
+        `;
+
+        item.addEventListener("click", () => playYouTube(videoId));
+        grid.appendChild(item);
+      });
+    }
+
+    function playYouTube(videoId) {
+      const modal = document.getElementById("videoModal");
+      const wrapper = document.getElementById("videoWrapper");
+
+      wrapper.classList.remove("vertical");
+      wrapper.innerHTML = `
+        <iframe
+          src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      `;
+
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function playLocalVideo(videoURL, vertical = false) {
+      const modal = document.getElementById("videoModal");
+      const wrapper = document.getElementById("videoWrapper");
+
+      wrapper.classList.toggle("vertical", vertical);
+      wrapper.innerHTML = `
+        <video src="${videoURL}" autoplay controls playsinline></video>
+      `;
+
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeVideo() {
+      const modal = document.getElementById("videoModal");
+      const wrapper = document.getElementById("videoWrapper");
+
+      modal.classList.remove("active");
+      wrapper.classList.remove("vertical");
+      wrapper.innerHTML = "";
+      document.body.style.overflow = "";
+    }
+
+    function closeVideoOnBackground(event) {
+      if (event.target.id === "videoModal") closeVideo();
+    }
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeVideo();
+    });
+
+    const filterButtons = document.querySelectorAll(".filter-btn");
+
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        const filter = button.dataset.filter;
+
+        document.querySelectorAll(".project").forEach(project => {
+          project.style.display =
+            filter === "all" || project.dataset.category === filter
+              ? "block"
+              : "none";
+        });
+      });
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+    loadYouTubeProjects();
+  </script>
+</body>
+</html>
